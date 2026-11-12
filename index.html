@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<script>window.ASSET_V="aa622c6-1794426427"</script>
+<script>window.ASSET_V="8a40399-1794483215"</script>
 <title>Ironwake</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -63,12 +63,24 @@ button:focus-visible { outline: 2px solid var(--ember); outline-offset: 3px; }
 .logo .jp { display: block; font-size: clamp(40px, 8.5vw, 76px); letter-spacing: 0.06em; text-shadow: 0 2px 24px rgba(0,0,0,0.8); }
 .logo .en { display: block; font-size: clamp(13px, 2.2vw, 17px); letter-spacing: 0.62em; color: var(--ash-dim); margin-top: 10px; font-family: var(--f-ui); font-weight: 700; }
 .lede { margin: 0; font-size: 14px; line-height: 1.75; color: var(--ash-dim); max-width: 40ch; text-wrap: pretty; }
+.difficulty-choice {
+  display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; border: 0; min-width: 0;
+}
+.difficulty-choice legend { margin-bottom: 3px; padding: 0; font-size: 12px; color: var(--ash); }
+.difficulty-choice label { position: relative; flex: 1; max-width: 128px; min-width: 75px; cursor: pointer; }
+.difficulty-choice input { position: absolute; opacity: 0; }
+.difficulty-choice span {
+  display: grid; align-content: center; min-height: 44px; padding: 2px 6px; text-align: center;
+  border: 1px solid #817258; border-radius: 6px; background: #242019;
+}
+.difficulty-choice small { font-size: 10px; color: #d5c7ad; }
+.difficulty-choice input:checked + span { border-color: var(--ember); color: #ffcf9a; background: #3a261c; }
+.difficulty-choice input:focus-visible + span { outline: 2px solid var(--ember); outline-offset: 2px; }
 .title-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 6px; }
 .weapon-choice { display: inline-flex; gap: 8px; align-items: center; color: #d5c7ad; }
-.weapon-choice select[hidden] { display: none; }
 .weapon-choice button { min-height: 44px; min-width: 9.5em; padding: 0 12px; color: inherit; background: #242019; border: 1px solid #817258; border-radius: 6px; font: inherit; text-align: left; touch-action: manipulation; }
 .weapon-choice button:active { background: #3a3226; }
-.weapon-choice select { min-height: 44px; padding: 0 8px; color: inherit; background: #242019; border: 1px solid #817258; border-radius: 6px; font: inherit; }
+#weapon-btn::after { content: ' ▾'; color: var(--ash-dim); }
 .btn-primary {
   font-family: var(--f-display); font-size: 20px; letter-spacing: 0.3em; padding: 14px 30px 14px 36px;
   background: var(--blood); color: #fff; clip-path: polygon(0 0, 100% 0, 94% 100%, 0 100%);
@@ -170,16 +182,48 @@ body.raging #hud::after { content: ""; position: absolute; inset: 0; pointer-eve
 .panel { display: grid; gap: 16px; justify-items: center; text-align: center; width: min(460px, 100%); }
 .panel h2 { font-family: var(--f-display); font-size: clamp(34px, 6vw, 48px); letter-spacing: 0.3em; padding-left: 0.3em; margin: 0; text-wrap: balance; }
 .panel p { margin: 0; color: var(--ash-dim); font-size: 14px; letter-spacing: 0.06em; }
-#stat-select { overflow: auto; }
-#stat-select .panel { gap: 10px; padding: 12px; }
-#stat-select h2 { font-size: clamp(24px, 6vw, 36px); letter-spacing: 0.1em; }
-.stat-options { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-.stat-option { display: grid; gap: 3px; min-height: 66px; padding: 8px; border: 1px solid #8a5b42; background: #291a15; text-align: left; }
-.stat-option:hover:not(:disabled) { border-color: var(--ember); }
-.stat-option:disabled { opacity: 0.52; cursor: default; }
-.stat-option strong { font-size: 16px; }
-.stat-rank { color: #ffd080; font-size: 13px; }
-.stat-effect { color: var(--ash-dim); font-size: 12px; }
+#weapon-picker { grid-template-rows: minmax(0, 1fr); }
+#weapon-picker .panel { width: min(400px, 100%); max-height: 100%; overflow-y: auto; touch-action: pan-y; gap: 12px; padding: 16px; background: var(--ink); border: 1px solid #817258; border-radius: 6px; }
+#weapon-picker h2 { font-size: clamp(22px, 5vw, 30px); letter-spacing: 0.08em; }
+.weapon-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 100%; }
+.weapon-options button { min-height: 44px; padding: 6px; border: 1px solid #817258; border-radius: 6px; background: #242019; }
+.weapon-options button[aria-pressed="true"] { border-color: var(--ember); background: #3a261c; color: #ffcf9a; }
+#weapon-picker-close { min-height: 44px; }
+#stat-select { grid-template-rows: minmax(0, 1fr); background: rgba(10,5,4,0.55); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.stat-panel {
+  box-sizing: border-box; width: min(900px, 100%); max-height: 100%; overflow-y: auto; touch-action: pan-y;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 27%); gap: clamp(8px, 2vw, 18px);
+  padding: clamp(8px, 2vw, 22px); border: 1px solid #917358; border-radius: 6px;
+  background: linear-gradient(130deg, #292019, #160f0c 68%); box-shadow: 0 10px 30px #000a;
+}
+.stat-content { min-width: 0; }
+#stat-title { margin: 0; padding-bottom: 4px; border-bottom: 1px solid #8a5b42; font: 800 clamp(25px, 5vw, 52px)/1.15 var(--f-display); }
+.stat-prompt { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0 12px; margin: 4px 0 8px; color: var(--ash); font-size: clamp(12px, 2vw, 17px); }
+#stat-points { color: #ffd080; font-variant-numeric: tabular-nums; }
+.stat-options { display: grid; gap: 4px; }
+.stat-option {
+  display: grid; grid-template-columns: 3.5em minmax(0, 1fr) 3em; align-items: center;
+  gap: 1px clamp(4px, 1vw, 12px); min-height: 44px; padding: 4px clamp(4px, 1vw, 12px);
+  border: 1px solid #73523e; background: #1d1512; text-align: left; font-size: clamp(12px, 2vw, 18px);
+}
+.stat-option:active:not(:disabled), .stat-option:focus-visible, .stat-option[data-stat="awakening"]:not(:disabled) { border-color: var(--ember); background: #2b1a11; }
+.stat-option:focus-visible { outline-offset: 1px; }
+.stat-option:disabled { opacity: 0.65; cursor: default; }
+.stat-bar { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: clamp(1px, 0.25vw, 3px); height: clamp(10px, 2.5vw, 24px); }
+.stat-bar span { background: #37302b; box-shadow: inset 0 0 0 1px #62554a; }
+.stat-bar .filled { background: linear-gradient(#c3824b, #8c502a); box-shadow: inset 0 0 0 1px #ce9b69; }
+.stat-rank { text-align: right; color: #ffd8b0; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.stat-effect { grid-column: 1 / -1; color: #e9c3a5; font-size: clamp(10px, 1.6vw, 14px); }
+.stat-portrait { position: relative; min-width: 0; border: 1px solid #886344; background: #21130c; }
+.stat-portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 53% top; }
+@media (max-width: 520px) and (orientation: portrait) {
+  .stat-portrait { align-self: start; aspect-ratio: 3 / 4; }
+}
+@media (max-height: 360px) and (orientation: landscape) {
+  #stat-title { font-size: 28px; }
+  .stat-panel { padding: 8px; }
+  .stat-prompt { margin: 3px 0 4px; }
+}
 .stats { display: grid; grid-template-columns: repeat(5, 1fr); width: 100%; border-top: 1px solid rgba(233,221,210,0.15); border-bottom: 1px solid rgba(233,221,210,0.15); }
 .stats div { display: grid; gap: 2px; padding: 12px 4px; }
 .stats dt { font-size: 10px; letter-spacing: 0.24em; color: var(--ash-dim); }
@@ -206,11 +250,15 @@ body.raging #hud::after { content: ""; position: absolute; inset: 0; pointer-eve
     <div class="eyebrow">一騎当千 ダークファンタジー アクション</div>
     <h1 class="logo"><span class="jp">鉄塊の傭兵</span><span class="en">IRONWAKE</span></h1>
     <p class="lede">身の丈を超える鉄塊を背負い、亡者の軍勢に一人で挑む。荒野、城塞跡、血の沼地、凍てつく峠、黒鉄の魔城。五つの戦場を斬り抜け、魔王を討て。</p>
+    <fieldset class="difficulty-choice">
+      <legend>難易度</legend>
+      <label><input type="radio" name="difficulty" value="easy"><span><b>EASY</b><small>レベル・武器最大</small></span></label>
+      <label><input type="radio" name="difficulty" value="normal" checked><span><b>NORMAL</b><small>通常プレイ</small></span></label>
+      <label><input type="radio" name="difficulty" value="hard"><span><b>HARD</b><small>敵が強い</small></span></label>
+    </fieldset>
     <div class="title-actions">
       <div class="weapon-choice" hidden><span id="weapon-label">武器</span>
-        <!-- the native picker does not open on iPhone Safari here, so a button steps through the weapons;
-             the select stays (hidden) as the value store -->
-        <button type="button" id="weapon-btn" aria-labelledby="weapon-label weapon-btn">標準大剣 ▸</button>
+        <button type="button" id="weapon-btn" aria-labelledby="weapon-label weapon-btn" aria-haspopup="dialog" aria-controls="weapon-picker" aria-expanded="false">標準大剣</button>
         <select id="weapon-select" hidden aria-hidden="true" tabindex="-1">
           <option value="standard">標準大剣</option>
         </select>
@@ -219,8 +267,15 @@ body.raging #hud::after { content: ""; position: absolute; inset: 0; pointer-eve
       <button class="btn-ghost" id="btn-continue" hidden>続きから</button>
       <span class="rotate-hint">端末を横向きにすると遊びやすい</span>
     </div>
-    <div class="keys touch">左側をなぞって<b>移動</b> ／ <b>斬</b>連撃（移動中は突進突き、連撃中に後ろで斬り上げ・横で袈裟斬り、回避中に押すと反撃） ／ <b>重</b>長押しで溜めて離すと回転斬り（溜めるほど威力と吹き飛びが増える）、連撃の途中で押すと段数に応じた締めの技 ／ <b>避</b>回避 ／ <b>覚醒</b>専用連撃<br>ボス戦：武器が光ったら<b>斬</b>で弾く ／ 横か後ろへ倒して<b>斬</b>で見切り斬り</div>
-    <div class="keys desk"><b>WASD</b> 移動 ／ <b>J</b> 連撃（移動中は突進突き、後ろで斬り上げ・横で袈裟斬り、回避中は反撃） ／ <b>K</b> 長押しで溜め回転斬り・連撃中は締め技 ／ <b>Space</b> 回避 ／ <b>U</b> 覚醒 ／ <b>P</b> 一時停止<br>ボス戦：武器が光ったら <b>J</b> で弾く ／ 横か後ろ＋<b>J</b> で見切り斬り</div>
+    <div class="keys touch">左側をなぞって<b>移動</b> ／ <b>斬</b>連撃（前後左右・斜めで技が変化、回避中は反撃） ／ <b>重</b>長押しで溜めて離すと回転斬り（回避中から溜められ、長く溜めると威力と吹き飛びが増える）、斬の途中で方向＋重を押すと締め技 ／ <b>避</b>回避 ／ <b>覚醒</b>専用連撃<br>ボス戦：武器が光ったら<b>斬</b>で弾く ／ 横か後ろへ倒して<b>斬</b>で見切り斬り</div>
+    <div class="keys desk"><b>WASD</b> 移動 ／ <b>J</b> 連撃（前後左右・斜めで技が変化、回避中は反撃） ／ <b>K</b> 長押しで溜め回転斬り（回避中から溜め可）・斬の途中で方向＋Kを押すと締め技 ／ <b>Space</b> 回避 ／ <b>U</b> 覚醒 ／ <b>P</b> 一時停止<br>ボス戦：武器が光ったら <b>J</b> で弾く ／ 横か後ろ＋<b>J</b> で見切り斬り</div>
+  </div>
+  <div id="weapon-picker" class="overlay" role="dialog" aria-modal="true" aria-labelledby="weapon-picker-title" hidden>
+    <div class="panel">
+      <h2 id="weapon-picker-title">武器を選ぶ</h2>
+      <div class="weapon-options"></div>
+      <button type="button" class="btn-ghost" id="weapon-picker-close">閉じる</button>
+    </div>
   </div>
 </section>
 
@@ -261,15 +316,19 @@ body.raging #hud::after { content: ""; position: absolute; inset: 0; pointer-eve
 </div>
 
 <div id="stat-select" class="overlay" role="dialog" aria-modal="true" aria-labelledby="stat-title" aria-describedby="stat-points" hidden>
-  <div class="panel">
-    <h2 id="stat-title">強化するステータスを選ぶ</h2>
-    <p id="stat-points" aria-live="polite"></p>
-    <div class="stat-options">
-      <button class="stat-option" data-stat="health"><strong>体力</strong><span class="stat-rank"></span><span class="stat-effect">最大体力が増える</span></button>
-      <button class="stat-option" data-stat="power"><strong>攻撃力</strong><span class="stat-rank"></span><span class="stat-effect">ダメージと吹き飛ばしが強くなる</span></button>
-      <button class="stat-option" data-stat="technique"><strong>技術</strong><span class="stat-rank"></span><span class="stat-effect">斬を長押ししたときの連撃数が増える</span></button>
-      <button class="stat-option" data-stat="dodge"><strong>回避</strong><span class="stat-rank"></span><span class="stat-effect">回避の無敵が早く始まる</span></button>
+  <div class="stat-panel">
+    <div class="stat-content">
+      <h2 id="stat-title">レベルアップ</h2>
+      <p class="stat-prompt"><span>強化する項目を選ぶ</span><span id="stat-points" aria-live="polite"></span></p>
+      <div class="stat-options">
+        <button type="button" class="stat-option" data-stat="health" title="最大体力が増える"><strong>体力</strong><span class="stat-bar" aria-hidden="true"></span><span class="stat-rank"></span></button>
+        <button type="button" class="stat-option" data-stat="power" title="ダメージと吹き飛ばしが強くなる"><strong>攻撃力</strong><span class="stat-bar" aria-hidden="true"></span><span class="stat-rank"></span></button>
+        <button type="button" class="stat-option" data-stat="technique" title="斬を長押ししたときの連撃数が増える"><strong>技術</strong><span class="stat-bar" aria-hidden="true"></span><span class="stat-rank"></span></button>
+        <button type="button" class="stat-option" data-stat="dodge" title="回避動作が速くなり、無敵時間が延びる"><strong>回避</strong><span class="stat-bar" aria-hidden="true"></span><span class="stat-rank"></span></button>
+        <button type="button" class="stat-option" data-stat="awakening"><strong>覚醒</strong><span class="stat-bar" aria-hidden="true"></span><span class="stat-rank"></span><span class="stat-effect">覚醒ゲージが早くたまり、効果時間が延びる</span></button>
+      </div>
     </div>
+    <div class="stat-portrait"><img src="assets/level-up-portrait.png" alt="鉄塊の傭兵"></div>
   </div>
 </div>
 
@@ -295,6 +354,6 @@ body.raging #hud::after { content: ""; position: absolute; inset: 0; pointer-eve
   </div>
 </div>
 
-<script src="game.js?v=aa622c6-1794426427"></script>
+<script src="game.js?v=8a40399-1794483215"></script>
 
 </html>
