@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<script>window.ASSET_V="8adb66c-1794705391"</script>
+<script>window.ASSET_V="0a36d26-1794709909"</script>
 <title>Ironwake</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -292,8 +292,8 @@ body.raging #hud::after { content: ""; position: absolute; inset: 0; pointer-eve
       <button class="btn-ghost" id="btn-continue" hidden>続きから</button>
       <span class="rotate-hint">端末を横向きにすると遊びやすい</span>
     </div>
-    <div class="keys touch">左側をなぞって<b>移動</b> ／ <b>斬</b>連撃（1回押すと1回攻撃。前後左右・斜めで技が変化、回避中は反撃。同じ斬の連打は威力が落ち、方向・重・避を挟むと戻る） ／ <b>重</b>長押しで溜めて離すと回転斬り（回避中から溜められ、長く溜めると威力と吹き飛びが増える）、斬の途中で方向＋重を押すと締め技 ／ <b>避</b>回避 ／ <b>覚醒</b>専用連撃<br>組み合わせ：斬の回数 × 方向 × <b>重</b>／<b>避</b>で技が変わる（3回目以降は新しい技が出る。技術が上がるほど連撃の技が増える）<br>ボス戦：武器が光ったら<b>斬</b>で弾く ／ 横か後ろへ倒して<b>斬</b>で見切り斬り</div>
-    <div class="keys desk"><b>WASD</b> 移動 ／ <b>J</b> 連撃（1回押すと1回攻撃。前後左右・斜めで技が変化、回避中は反撃。同じ斬の連打は威力が落ち、方向・K・Spaceを挟むと戻る） ／ <b>K</b> 長押しで溜め回転斬り（回避中から溜め可）・斬の途中で方向＋Kを押すと締め技 ／ <b>Space</b> 回避 ／ <b>U</b> 覚醒 ／ <b>P</b> 一時停止<br>組み合わせ：斬の回数 × 方向 × <b>K</b>／<b>Space</b>で技が変わる（3回目以降は新しい技が出る。技術が上がるほど連撃の技が増える）<br>ボス戦：武器が光ったら <b>J</b> で弾く ／ 横か後ろ＋<b>J</b> で見切り斬り</div>
+    <div class="keys touch">左側をなぞって<b>移動</b> ／ <b>斬</b>連撃（1回押すと1回攻撃。前後左右・斜めで技が変化、回避中は反撃。同じ斬の連打は威力が落ち、方向・重・避を挟むと戻る） ／ <b>重</b>長押しで溜めて離すと回転斬り（回避中から溜められ、長く溜めると威力と吹き飛びが増える）、斬の途中で方向＋重を押すと締め技 ／ <b>避</b>回避 ／ <b>覚醒</b>専用連撃<br>組み合わせ：斬の回数 × 方向 × <b>重</b>／<b>避</b>で技が変わる（3回目以降は新しい技が出る。技術が上がるほど連撃の技が増える）<br>ボス戦：武器が光ったら<b>斬</b>で弾く ／ 命中寸前に<b>斬</b>を合わせると武器を落とす</div>
+    <div class="keys desk"><b>WASD</b> 移動 ／ <b>J</b> 連撃（1回押すと1回攻撃。前後左右・斜めで技が変化、回避中は反撃。同じ斬の連打は威力が落ち、方向・K・Spaceを挟むと戻る） ／ <b>K</b> 長押しで溜め回転斬り（回避中から溜め可）・斬の途中で方向＋Kを押すと締め技 ／ <b>Space</b> 回避 ／ <b>U</b> 覚醒 ／ <b>P</b> 一時停止<br>組み合わせ：斬の回数 × 方向 × <b>K</b>／<b>Space</b>で技が変わる（3回目以降は新しい技が出る。技術が上がるほど連撃の技が増える）<br>ボス戦：武器が光ったら <b>J</b> で弾く ／ 命中寸前に <b>J</b> を合わせると武器を落とす</div>
   </div>
   <div id="weapon-picker" class="overlay" role="dialog" aria-modal="true" aria-labelledby="weapon-picker-title" hidden>
     <div class="panel">
@@ -314,7 +314,8 @@ body.raging #hud::after { content: ""; position: absolute; inset: 0; pointer-eve
       </fieldset>
       <div class="boss-level-row">
         <label for="boss-level">自分のレベル</label>
-        <input type="number" inputmode="numeric" id="boss-level" min="1" step="1" value="1">
+        <input type="number" inputmode="numeric" id="boss-level" min="1" step="1" value="1" aria-describedby="boss-level-range">
+        <span id="boss-level-range"></span>
       </div>
       <div class="row">
         <button type="button" class="btn-primary" id="btn-boss-start">対戦する</button>
@@ -402,6 +403,6 @@ body.raging #hud::after { content: ""; position: absolute; inset: 0; pointer-eve
   </div>
 </div>
 
-<script src="game.js?v=8adb66c-1794705391"></script>
+<script src="game.js?v=0a36d26-1794709909"></script>
 
 </html>
